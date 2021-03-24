@@ -1,6 +1,8 @@
 const express = require('express')
 const helmet = require('helmet')
 const cors = require('cors')
+const session = require('express-session')
+const KnexSessionStore = require('connect-session-knex')(session)
 
 const usersRouter = require('./users/users-router')
 const authRouter = require('./auth/auth-router')
@@ -23,6 +25,27 @@ const server = express()
 server.use(helmet())
 server.use(express.json())
 server.use(cors())
+
+server.use(
+  session({
+    name: 'chocolatechip',
+    secret: process.env.SECRET || 'secret',
+    cookie: {
+      maxAge: 1000 * 60 * 60,
+      secure: process.env.NODE_ENV === 'production' ? true : false,
+      httpOnly: process.env.NODE_ENV === 'production' ? true : false
+    },
+    resave: false,
+    saveUninitialized: false,
+    store: new KnexSessionStore({
+      knex: require('../data/db-config'),
+      tablename: 'sessions',
+      sidfieldname: 'sid',
+      createtable: true,
+      clearInterval: 1000 * 60 * 65
+    })
+  })
+)
 
 server.use('/api/users', usersRouter)
 server.use('/api/auth', authRouter)

@@ -30,7 +30,7 @@ const Users = require('./users-model')
 router.get('/', async (req, res, next) => {
   try {
     const allUsers = await Users.find()
-    res.json(allUsers)
+    res.status(200).json(allUsers)
   } catch (err) {
     next(err)
   }

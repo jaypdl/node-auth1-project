@@ -1,4 +1,5 @@
 const User = require('../users/users-model')
+const db = require('../../data/db-config')
 /*
   If the user does not have a session saved in the server
 
@@ -7,7 +8,9 @@ const User = require('../users/users-model')
     "message": "You shall not pass!"
   }
 */
-function restricted(req, res, next) {}
+async function restricted(req, res, next) {
+  const 
+}
 
 /*
   If the username in req.body already exists in the database
