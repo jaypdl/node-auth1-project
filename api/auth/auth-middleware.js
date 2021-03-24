@@ -8,9 +8,7 @@ const db = require('../../data/db-config')
     "message": "You shall not pass!"
   }
 */
-async function restricted(req, res, next) {
-  const 
-}
+async function restricted(req, res, next) {}
 
 /*
   If the username in req.body already exists in the database
@@ -21,11 +19,13 @@ async function restricted(req, res, next) {
   }
 */
 async function checkUsernameFree(req, res, next) {
-  const { username } = req.params.body
+  const { username } = req.body
   try {
-    const isFree = await User.findBy({ username })
-    if (!isFree) {
+    const exists = await User.findBy({ username })
+    if (exists) {
       res.status(422).json({ message: 'Username taken' })
+    } else {
+      next()
     }
   } catch (err) {
     next(err)
@@ -53,3 +53,10 @@ function checkUsernameExists() {}
 function checkPasswordLength() {}
 
 // Don't forget to add these to the `exports` object so they can be required in other modules
+
+module.exports = {
+  restricted,
+  checkUsernameFree,
+  checkUsernameExists,
+  checkPasswordLength
+}
